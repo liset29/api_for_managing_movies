@@ -2,8 +2,9 @@ import base64
 
 from app.auth import encode_jwt
 from app.auth_utils import check_unique_value, hash_password
-from app.models import User
-from app.schemas import UserCreate, UserResponse
+from app.kino_api import find_detail_movies
+from app.models import User, FavoriteMovie
+from app.schemas import UserCreate, UserResponse, Movie
 
 
 async def registration(user: UserCreate, session) -> UserResponse:
@@ -20,7 +21,31 @@ async def registration(user: UserCreate, session) -> UserResponse:
         session.add(new_user)
         await session.commit()
 
-        # jwt_payload = {"sub": user.username, "email": user.email}
-        # await encode_jwt(jwt_payload)
-
         return new_user
+
+
+
+async def add_favorite_movie(kino_id,user:UserCreate,session):
+    film = await find_detail_movies(kino_id)
+    async with session() as session:
+        print(film)
+        film = FavoriteMovie(user_id = user.id,
+                             kinopoisk_id = kino_id,
+                             title = film.get("nameRu"),
+                             year = film.get('year'),
+                             description = film.get('description'),
+                             rating = film.get('ratingKinopoisk')
+                             )
+
+        session.add(film)
+        await session.commit()
+
+        movie = Movie(
+            kinopoisk_id=film.kinopoisk_id,
+            title=film.title,
+            year=film.year,
+            description=film.description,
+            rating=film.rating
+        )
+        return movie
+

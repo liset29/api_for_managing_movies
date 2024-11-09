@@ -10,11 +10,20 @@ class User(Base):
     password = Column(String, nullable=False)
     is_active = Column(Boolean, default=True)
 
-    favorites = relationship("FavoriteMovie", back_populates="owner")
+
+    favorite_movies = relationship("FavoriteMovie", back_populates="user")
+
 
 class FavoriteMovie(Base):
-    __tablename__ = 'favorite_movies'
+    __tablename__ = "favorite_movies"
+
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     kinopoisk_id = Column(Integer, nullable=False)
-    owner = relationship("User", back_populates="favorites")
+    title = Column(String, nullable=False)
+    year = Column(Integer, nullable=True)
+    description = Column(String, nullable=False)
+    rating = Column(String)
+
+    user = relationship("User", back_populates="favorite_movies")
+
