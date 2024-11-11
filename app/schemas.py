@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Union
 
 from pydantic import BaseModel, EmailStr
 
@@ -15,16 +15,10 @@ class UserResponse(BaseModel):
 
 class Movie(BaseModel):
     kinopoisk_id: int
-    title: str
-    year: int
-    description: str
-    rating: Optional[str] = None
-
-
-
-class FavoriteMovie(BaseModel):
-    id: int
-    kinopoisk_id: int
+    title: Optional[str]
+    year: Optional[Union[float, str]]
+    description: Optional[str] = None
+    rating: Optional[Union[float, str]] = None
 
 
 class TokenInfo(BaseModel):
@@ -32,8 +26,5 @@ class TokenInfo(BaseModel):
     token_type: str
 
 
-class MoviesInfo(BaseModel):
-    kinopoisk_id: int
-    name: str
-    year: str
-    rating: str
+class ResponseDelete(BaseModel):
+    detail: str
